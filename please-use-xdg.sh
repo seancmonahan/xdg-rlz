@@ -97,6 +97,24 @@ export MACHINE_STORAGE_PATH="$XDG_DATA_HOME/docker/machine"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 
 # Less
+
+# Less version 582 and up support the plain text configuration format
+# which previously required processing to binary with lesskey
+#if [ $(less -V | head -n 1 | cut -d ' ' -f 2) -ge 582 \
+#  -a \
+#  -f "$XDG_CONFIG_HOME/less/lesskey.in" ]; then
+#  export LESSKEYIN="$XDG_CONFIG_HOME/less/lesskey.in"
+#fi
+
+# probably simpler to just export it if it's there?
+# There doesn't seem to be a standardized naming for the text vs binary
+# formatted file; newer versions of less just look at lessfile and I think
+# work just fine regardless of its binary format? Would need to test further.
+# I'm just using the name lesskey.in so my chezmoi-sync'd dotfiles can work across
+# systems. I added a one-liner to .config/less/ that runs lesskey to process into binary if you need to
+[ -f "$XDG_CONFIG_HOME/less/lesskey.in" ] && export LESSKEYIN="$XDG_CONFIG_HOME/less/lesskey.in"
+
+# LESSKEY is overridden by LESSKEYIN if it is set, so it's OK to still export LESSKEY
 export LESSKEY="$XDG_CONFIG_HOME/less/lesskey" \
   LESSHISTFILE="$XDG_STATE_HOME/less/history"
 
